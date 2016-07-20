@@ -1,0 +1,34 @@
+{
+  "if" : {
+      <condition> | <logical operator>
+  },
+  "then" : {
+      "effect" : "deny | audit | append"
+  }
+}
+
+The supported logical operators along with the syntax are listed below:
+Operator Name 	Syntax
+Not 	"not" : {<condition or operator >}
+And 	"allOf" : [ {<condition or operator >},{<condition or operator >}]
+Or 	"anyOf" : [ {<condition or operator >},{<condition or operator >}]
+
+Resource Manager enables you to specify complex logic in your policy through nested operators. For example, you can deny resource creation in a particular location for a specified resource type. An example of nested operators is shown below.
+
+
+Conditions
+
+A condition evaluates whether a field or source meets certain criteria. The supported condition names and syntax are listed below:
+Condition Name 	Syntax
+Equals 	"equals" : "<value>"
+Like 	"like" : "<value>"
+Contains 	"contains" : "<value>"
+In 	"in" : [ "<value1>","<value2>" ]
+ContainsKey 	"containsKey" : "<keyName>"
+Fields
+
+Conditions are formed through the use of fields and sources. A field represents properties in the resource request payload that is used to describe the state of the resource. A source represents characteristics of the request itself.
+
+The following fields and sources are supported:
+
+Fields: name, kind, type, location, tags, tags.*, and property alias. 
