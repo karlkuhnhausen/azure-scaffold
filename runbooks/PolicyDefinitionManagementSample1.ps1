@@ -100,4 +100,4 @@ else {
     Write-Output "No policy definitions to create."
 }
 
-Write-Host "Policy definitions and assignments completed."
+Write-Output "Policy definitions and assignments completed."
