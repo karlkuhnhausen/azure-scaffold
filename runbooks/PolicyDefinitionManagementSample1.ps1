@@ -79,21 +79,28 @@ if ($blobs -ne $null) {
                             
             # If the json file was updated (by looking at last modified date in the description) update the policy definition.
             if ($policyDefinition.Properties.description -ne $policyDescription) {
-                Write-Output "Policy definition:" $policyName "exists. Updating with revised policy." $policyDescription
+                
                 Set-AzureRmPolicyDefinition -Id $policyDefinition.ResourceId -Description $policyDescription -Policy $policyjsonFile
+                $msg = "Policy definition: " + $policyName + " exists. Updating with revised policy: " + $policyDescription
+                Write-Output $msg
             }
             else {
-                Write-Output "Policy definition:" $policyName "exists and is current."
+                $msg = "Policy definition: " + $policyName + " exists and is current."
+                Write-Output $msg
             }
         }
         Catch [System.Exception] {
-            Write-Output "Creating New Policy Definition:" $policyName "with json file:" $policyDescription
+            
+            # Policy definition does not exist, create a new one.
             $policyDefinition = New-AzureRmPolicyDefinition -Name $policyName -Description $policyDescription -Policy $policyjsonFile
+            $msg = "Creating New Policy Definition: " + $policyName + " with json file: " + $policyDescription
+            Write-Output $msg
         }
 
         # Assign the policy definition to the current subscription
         New-AzureRmPolicyAssignment -Name $policyName"-Policy-Sub-Scope" -PolicyDefinition $policyDefinition -Scope $subscriptionScope
-        Write-Output "Assigning policy definition" $policyName "to subscription scope" $subscriptionScope  
+        $msg = "Assigning policy definition: " + $policyName + " to subscription scope: " + $subscriptionScope
+        Write-Output $msg 
     }
 }
 else { 
