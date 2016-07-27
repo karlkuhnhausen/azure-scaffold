@@ -15,6 +15,6 @@
     ]
   },
     "then": {
-        "effect": "audit"
+        "effect": ""
     }
 }
