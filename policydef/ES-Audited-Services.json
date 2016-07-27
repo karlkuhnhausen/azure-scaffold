@@ -1,0 +1,22 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-10-01-preview/policyDefinition.json. ",
+  "if": {
+      "anyOf": [
+        {
+          "field": "type",
+          "like": "Microsoft.HDInsight/*"
+        },
+        {
+          "field": "type",
+          "like": "Microsoft.ContainerService/*"
+        },
+        {
+          "field": "type",
+          "like": "Microsoft.AppService/*"
+        }
+      ]
+  },
+  "then": {
+    "effect": "audit"
+  }
+} 

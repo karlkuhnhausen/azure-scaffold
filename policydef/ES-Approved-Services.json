@@ -1,0 +1,28 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-10-01-preview/policyDefinition.json. ",
+  "if": {
+    "not": {
+      "anyOf": [
+        {
+          "field": "type",
+          "like": "Microsoft.Resources/*"
+        },
+        {
+          "field": "type",
+          "like": "Microsoft.Compute/*"
+        },
+        {
+          "field": "type",
+          "like": "Microsoft.Storage/*"
+        },
+        {
+          "field": "type",
+          "like": "Microsoft.Network/*"
+        }
+      ]
+    }
+  },
+  "then": {
+    "effect": "deny"
+  }
+} 

@@ -1,0 +1,12 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-10-01-preview/policyDefinition.json. ",
+  "if": {
+    "not": {
+      "field": "location",
+      "in": [ "westus", "eastus" ]
+    }
+  },
+  "then": {
+    "effect": "deny"
+  }
+}
