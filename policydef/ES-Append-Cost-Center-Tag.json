@@ -9,7 +9,7 @@
     "details": [
       {
         "field": "tags",
-        "value": { "costCenter": "Enter Cost Center in format 0000-0000" }
+        "value": { "CostCenter": "Enter Cost Center in format 0000-0000" }
       }
     ]
   }
