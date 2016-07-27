@@ -18,6 +18,10 @@
         {
           "field": "type",
           "like": "Microsoft.Network/*"
+        },
+        {
+          "field": "type",
+          "like": "Microsoft.AppService/*"
         }
       ]
     }
