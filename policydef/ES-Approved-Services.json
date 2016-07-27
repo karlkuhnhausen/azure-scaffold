@@ -22,6 +22,10 @@
         {
           "field": "type",
           "like": "Microsoft.AppService/*"
+        },
+        {
+          "field": "type",
+          "like": "Microsoft.Web/*"
         }
       ]
     }
