@@ -1,4 +1,4 @@
-Write-Host "Adding group to contributor role" -ForegroundColor Green
+Write-OutPut "Adding group to contributor role" -ForegroundColor Green
 
 New-AzureRmRoleAssignment -Scope $scope `
                           -RoleDefinitionName "Contributor" `
