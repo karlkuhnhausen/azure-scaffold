@@ -4,7 +4,7 @@
 
     .NOTES
         AUTHOR: Karl Kuhnhausen
-        LASTEDIT: July 27, 2016
+        LASTEDIT: January 24, 2017
 #>
 
 $connectionName = "AzureRunAsConnection"
@@ -142,5 +142,5 @@ else {
     Write-Output "No policy definitions to create."
 }
 
-$msg = "Policy definitions and assignements completed."
+$msg = "Policy definitions and assignments completed."
 Write-Output $msg
