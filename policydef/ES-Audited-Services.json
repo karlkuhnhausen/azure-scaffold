@@ -12,6 +12,10 @@
       },
       {
         "field": "type",
+        "like": "Microsoft.Compute/*"
+      },
+      {
+        "field": "type",
         "like": "Microsoft.AppService/*"
       }
     ]
