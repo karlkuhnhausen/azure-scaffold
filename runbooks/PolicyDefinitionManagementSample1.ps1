@@ -1,10 +1,15 @@
 <#
     .DESCRIPTION
-        An example runbook which gets lists all policy definitions across subscriptions using the Run As Account (Service Principal)
+        An example runbook to demonstrate the creation of Azure Resource Manager policies from policy json files in an Azure Storage Account
+        using the Run As Account (Service Principal).
+        This demonstrates defining and applying policies across multiple subscriptions. The service principal must have access to 
+        multiple subscriptions with the rights to execute Microsoft.Authorization/* write privelages.
+        Classic storage accounts are NOT supported in this script.
+        By design, this runbook adds and updates policies. It does not delete policies.
 
     .NOTES
         AUTHOR: Karl Kuhnhausen
-        LASTEDIT: January 24, 2017
+        LASTEDIT: January 26, 2017
 #>
 
 $connectionName = "AzureRunAsConnection"
@@ -37,7 +42,7 @@ try
 {
 	"Getting Variables..."
 	$pathToPlaceBlob = "C:\"
-	$subscriptionId= Get-AutomationVariable -Name 'PolicyStorageSubscription'
+	$storageAccountSubscriptionId= Get-AutomationVariable -Name 'PolicyStorageSubscription'
 	$policyDefStorageAccountName = Get-AutomationVariable -Name 'PolicyStorageAccountName'
 	$policyRG = Get-AutomationVariable -Name 'PolicyStorageResourceGroup'
 	$containerName = Get-AutomationVariable -Name 'PolicyContainer'	
@@ -50,11 +55,11 @@ catch
 }
 
 # Get the storage account subscription for downloading the policy definition files.
-Select-AzureRmSubscription `
-    -SubscriptionId $subscriptionId
+$storageSubscription = Select-AzureRmSubscription `
+                            -SubscriptionId $storageAccountSubscriptionId
 
-# Set a subscription scope for policy assignments.
-$subscriptionScope = "/subscriptions/" + $subscriptionId
+$msg = "Subscription where policy json files are stored:"
+Write-Output $msg, $storageSubscription
 
 $storageAccount = Get-AzureRmStorageAccount `
                     -StorageAccountName $policyDefStorageAccountName `
@@ -76,16 +81,12 @@ $blobs = Get-AzureStorageBlob `
             -Container $containerName
 
 if ($blobs -ne $null) {
+    
+    $msg = "Downloading json policy files from Azure storage account: " + $policyDefStorageAccountName + ", container: " + $containerName + ", to local directory " + $pathToPlaceBlob
+    Write-Output $msg
+    
+    # First download all of the policy json files locally to minimize round trips as we iterate through each subscription later.
     foreach ($blob in $blobs) {
-
-        # Remove the .json file extension for the policy name
-        $policyName = $blob.Name.Substring(0,$blob.Name.LastIndexOf('.'))
-
-        # Cast the UTC last modified date once.
-        $jsonLastModified = $blob.LastModified.UtcDateTime.ToString()
-
-        # Create the policy description with the last modified date of the json blob.
-        $policyDescription = $blob.Name + " UTC last modified: " + $jsonLastModified
         
         # Create the reference to the policy json file in the local directory to be used in the Get-AzurePolicyDefinition cmdlet.
         $policyjsonFile = $pathToPlaceBlob + $blob.Name
@@ -93,53 +94,86 @@ if ($blobs -ne $null) {
         # Download the policy json file to a local directory from the storage container for processing.
         $blob | Get-AzureStorageBlobContent `
                     -Destination $pathToPlaceBlob -Force
-
-        Try {
-            # Check to see if the policy exists.
-            $policyDefinition = Get-AzureRmPolicyDefinition `
-                                    -Name $policyName `
-                                    -ErrorAction SilentlyContinue
-                            
-            # If the json file was updated (by looking at last modified date in the description) update the policy definition.
-            if ($policyDefinition.Properties.description -ne $policyDescription) {
-                
-                Set-AzureRmPolicyDefinition `
-                    -Id $policyDefinition.ResourceId `
-                    -Description $policyDescription `
-                    -Policy $policyjsonFile
-
-                $msg = "Policy definition: " + $policyName + " exists. Updating with revised policy: " + $policyDescription
-                Write-Output $msg
-            }
-            else {
-                $msg = "Policy definition: " + $policyName + " exists and is current."
-                Write-Output $msg
-            }
-        }
-        Catch [System.Exception] {
+    }
+    
+    # Get all subscriptions to create policy definitions and assignments.
+    $subscriptions = Get-AzureRmSubscription
+    
+    foreach($subscription in $subscriptions) {
+        Write-Output "Defining and assigning policies for subscription:"
+        Set-AzureRmContext -SubscriptionId $subscription.SubscriptionID
+        
+        foreach ($blob in $blobs) {
             
-            # Policy definition does not exist, create a new one.
-            $policyDefinition = New-AzureRmPolicyDefinition `
-                                -Name $policyName `
-                                -Description $policyDescription `
-                                -Policy $policyjsonFile
+            # Remove the .json file extension for the policy name
+            $policyName = $blob.Name.Substring(0,$blob.Name.LastIndexOf('.'))
 
-            $msg = "Creating New Policy Definition: " + $policyName + " with json file: " + $policyDescription
-            Write-Output $msg
+            # Cast the UTC last modified date once.
+            $jsonLastModified = $blob.LastModified.UtcDateTime.ToString()
+
+            # Create the policy description with the last modified date of the json blob.
+            $policyDescription = $blob.Name + " UTC last modified: " + $jsonLastModified
+            
+            # Create the reference to the policy json file in the local directory to be used in the Get-AzurePolicyDefinition cmdlet.
+            $policyjsonFile = $pathToPlaceBlob + $blob.Name
+            
+            Try {
+                # Check to see if the policy exists.
+                $policyDefinition = Get-AzureRmPolicyDefinition `
+                                        -Name $policyName `
+                                        -ErrorAction SilentlyContinue
+                                
+                # If the json file was updated (by looking at last modified date in the description) update the policy definition.
+                if ($policyDefinition.Properties.description -ne $policyDescription) {
+                    
+                    Set-AzureRmPolicyDefinition `
+                        -Id $policyDefinition.ResourceId `
+                        -Description $policyDescription `
+                        -Policy $policyjsonFile
+
+                    $msg = "Policy definition: " + $policyName + " exists. Updating with revised policy: " + $policyDescription
+                    Write-Output $msg
+                }
+                else {
+                    $msg = "Policy definition: " + $policyName + " exists and is current."
+                    Write-Output $msg
+                }
+            }
+            Catch [System.Exception] {
+                
+                # Policy definition does not exist, create a new one.
+                $policyDefinition = New-AzureRmPolicyDefinition `
+                                    -Name $policyName `
+                                    -Description $policyDescription `
+                                    -Policy $policyjsonFile
+
+                $msg = "Creating new policy definition: " + $policyName + " with json file: " + $policyDescription
+                Write-Output $msg, $policyDefinition
+            }
+
+            # Set the subscription scope for policy assignments to the current subscription context.
+            $subscriptionScope = "/subscriptions/" + $subscription.SubscriptionId
+
+            Try {
+                # Assign the policy definition to the current subscription
+                $policyAssignment = New-AzureRmPolicyAssignment `
+                                        -Name $policyName"-Policy-Sub-Scope" `
+                                        -PolicyDefinition $policyDefinition `
+                                        -Scope $subscriptionScope
+
+                $msg = "Assigning policy definition: " + $policyName + " to subscription scope: " + $subscriptionScope
+                Write-Output $msg, $policyAssignment
+            }
+            Catch [System.Exception] {
+                $msg = "Policy assignment failed."
+                Write-Output $msg
+            }
         }
-
-        # Assign the policy definition to the current subscription
-        New-AzureRmPolicyAssignment `
-            -Name $policyName"-Policy-Sub-Scope" `
-            -PolicyDefinition $policyDefinition `
-            -Scope $subscriptionScope
-
-        $msg = "Assigning policy definition: " + $policyName + " to subscription scope: " + $subscriptionScope
-        Write-Output $msg 
     }
 }
 else { 
-    Write-Output "No policy definitions to create."
+    $msg = "No policy definitions in the Azure storage account: " + $policyDefStorageAccountName + " container: " + $containerName
+    Write-Output $msg
 }
 
 $msg = "Policy definitions and assignments completed."
