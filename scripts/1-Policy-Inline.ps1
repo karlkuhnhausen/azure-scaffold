@@ -1,4 +1,14 @@
-﻿Login-AzureRmAccount
+﻿<#
+    .DESCRIPTION
+        Sample script to demonstrate the creation of an Azure Resource Manager policy using inline syntax.
+        This policy will only allow the creation of standard LRS and GRS storage accounts.
+    
+    .NOTES
+        AUTHOR: Karl Kuhnhausen
+        LASTEDIT: January 26, 2017
+#>
+
+Login-AzureRmAccount
 
 # Get the current subscription context.
 $ctx = Get-AzureRmContext
