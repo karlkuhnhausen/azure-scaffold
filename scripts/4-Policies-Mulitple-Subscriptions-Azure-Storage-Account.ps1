@@ -20,13 +20,6 @@ $policyDefStorageAccountName = "<Your Storage Account Name>"
 $containerName = "<Container in Storage Account>"
 $policyRG = "<The Resource Group Your Storage Account is In>"
 
-# Variables for testing.
-$storageAccountSubscriptionId = "0a28e458-9f96-41cd-9312-b14dd595ef56"
-$policyDefStorageAccountName = "tr23datauw2001"
-$policyRG = "tr23-dev-rg"
-$pathToPlaceBlob = "C:\"
-$containerName = "policies"
-
 # Get the storage account subscription for downloading the policy definition files.
 Select-AzureRmSubscription `
     -SubscriptionId $storageAccountSubscriptionId
