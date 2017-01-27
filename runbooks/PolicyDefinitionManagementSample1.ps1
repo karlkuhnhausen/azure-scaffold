@@ -41,7 +41,8 @@ catch {
 try
 {
 	"Getting Variables..."
-	$pathToPlaceBlob = "C:\"
+	# Copying to the root directory of an automation PaaS VM to keep it simple.
+    $pathToPlaceBlob = "C:\"
 	$storageAccountSubscriptionId= Get-AutomationVariable -Name 'PolicyStorageSubscription'
 	$policyDefStorageAccountName = Get-AutomationVariable -Name 'PolicyStorageAccountName'
 	$policyRG = Get-AutomationVariable -Name 'PolicyStorageResourceGroup'
