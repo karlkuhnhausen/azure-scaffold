@@ -1,5 +1,5 @@
 {
-  "$schema": "http://schema.management.azure.com/schemas/2015-10-01-preview/policyDefinition.json. ",
+  "$schema": "http://schema.management.azure.com/schemas/2015-10-01-preview/policyDefinition.json",
   "if": {
     "exists": false,
     "field": "tags"
