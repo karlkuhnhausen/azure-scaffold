@@ -1,9 +1,9 @@
 <#
     .DESCRIPTION
         An example runbook to demonstrate the creation of Azure Resource Manager policies from policy json files in an Azure Storage Account
-        using the Run As Account (Service Principal).
-        This demonstrates defining and applying policies across multiple subscriptions. The service principal must have access to 
-        multiple subscriptions with the rights to execute Microsoft.Authorization/* write privelages. The "Owner" RBAC role has this level of privelage.
+        using the Run As Account (Service Principal). This demonstrates defining and applying policies across multiple subscriptions.
+        The service principal must have access to multiple subscriptions with the rights to execute Microsoft.Authorization/* read and write privelages.
+        The builtin RBAC roles of "Owner" and "User Access Administrator" have this level of privelage.
         Classic storage accounts are NOT supported in this script.
         By design, this runbook adds and updates policies. It does not delete policies.
 
