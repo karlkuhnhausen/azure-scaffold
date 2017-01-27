@@ -1,6 +1,6 @@
 ﻿<#
 .DESCRIPTION
-    Sample script to demonstrate the creation of an Azure Resource Manager policy from policies in a Azure Storage Account.
+    Sample script to demonstrate the creation of Azure Resource Manager policies from policy json files in an Azure Storage Account.
     This demonstrates defining and applying policies in a single subscription.
     Classic storage accounts are NOT supported in this script.
     By design, this script adds and updates policies. It does not delete policies.
