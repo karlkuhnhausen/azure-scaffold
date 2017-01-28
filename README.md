@@ -3,11 +3,11 @@ The Azure Enterprise Scaffold is a set of templates and scripts to jumpstart the
 
 ## Powershell Sample Scripts
 This repo has a set of sample PowerShell scripts, automation runbooks and policy json files to jumpstart your own governance framework with [Azure Resource Manager Policies](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-manager-policy). The repo folders contain the following:
-### policydef
+### /policydef
 A set of sample json files that define sample policies. [Other examples](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-manager-policy#policy-definition-examples) can be found on azure.microsoft.com. Some of which I have cribbed here.
-### runbooks
+### /runbooks
 An example Azure Automation runbook to demonstrate the creation of Azure Resource Manager policies from policy json files in an Azure Storage Account using the Run-As Account (Service Principal). This demonstrates defining and applying policies across multiple subscriptions.
-### scripts
+### /scripts
 Sample PowerShell scripts meant to be run interactively that demonstrate the policy definition and policy assignment cmdlets.
 ## More Reading
 * For a full discussion of the Azure Enterprise Scaffold see [Azure Enterprise Scaffold - Prescriptive Subscription Governance](https://azure.microsoft.com/en-us/documentation/articles/resource-manager-subscription-governance/).
