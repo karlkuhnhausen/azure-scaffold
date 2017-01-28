@@ -11,7 +11,7 @@
 
 Login-AzureRmAccount
 
-# Get all subscriptions for the current logged in account
+# Get all subscriptions for the current logged in account.
 $subscriptions = Get-AzureRmSubscription
 
 foreach ($subscription in $subscriptions) {
