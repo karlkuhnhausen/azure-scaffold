@@ -1,7 +1,7 @@
 # Azure Automation Runbook
 The PolicyManagementSample1 Azure automation runbook demonstrates how to read policy definition json files from an Azure storage account and apply it to multiple subscriptions. (Steps 5, 6 and 7 in the graphic below).
 ## End to End Automation
-To make is simple to manage Azure Resource Manager policies, they really should be treated as infrastructure as code and an automated build process put in place to apply and update the policies across all or targeted subscriptions in your organization. The diagram below represents one approach to do this.
+To make it simple to manage Azure Resource Manager policies, the policy definition files should be treated as infrastructure as code and an automated build process put in place to apply and update the policies across all or targeted subscriptions in your organization. The diagram below represents one approach to do this leveraging GitHub, Visual Studio Team Services and Azure Automation:
 ![Automation Pipeline](https://github.com/karlkuhnhausen/media/blob/master/azure-scaffold/Pipeline-Architecture.png?raw=true)
 
 1. Edit your policy json files with your favorite editor.
