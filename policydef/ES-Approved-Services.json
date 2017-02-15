@@ -13,11 +13,11 @@
         },
         {
           "field": "type",
-          "like": "Microsoft.Network/*"
+          "like": "Microsoft.AppService/*"
         },
         {
           "field": "type",
-          "like": "Microsoft.AppService/*"
+          "like": "Microsoft.Web/*"
         },
         {
           "field": "type",
