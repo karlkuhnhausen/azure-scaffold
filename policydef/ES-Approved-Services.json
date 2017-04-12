@@ -17,10 +17,6 @@
         },
         {
           "field": "type",
-          "like": "Microsoft.Web/*"
-        },
-        {
-          "field": "type",
           "like": "Microsoft.insights/*"
         }
       ]
