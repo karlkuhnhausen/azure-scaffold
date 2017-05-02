@@ -9,10 +9,6 @@
       {
         "field": "type",
         "like": "Microsoft.ContainerService/*"
-      },
-      {
-        "field": "type",
-        "like": "Microsoft.AppService/*"
       }
     ]
   },
